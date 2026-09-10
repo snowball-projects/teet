@@ -1,0 +1,15 @@
+{
+  "name": "teet",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "python3 scripts/build.py",
+    "test": "node --test tests/*.test.mjs",
+    "dev": "npm run build && python3 -m http.server 8785 --bind 127.0.0.1 --directory dist"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

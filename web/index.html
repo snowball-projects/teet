@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="Browse Twilight's Eve items and optimize a six-item character build."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>teet</title>
+    <link rel="icon" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./icon.png" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header>
+      <a class="brand" href="#items"
+        ><img src="./icon.png" width="38" height="38" alt="" />teet
+        <span>Twilight’s Eve Evo Toolkit</span></a
+      >
+      <nav aria-label="Tools">
+        <a href="#items" data-page="items" aria-current="page">Equipment</a
+        ><a href="#automation" data-page="automation">Automation</a>
+      </nav>
+      <button id="info" aria-label="About this toolkit">ⓘ</button>
+    </header>
+    <main id="main" tabindex="-1">
+      <div id="notice" role="status" aria-live="polite"></div>
+      <div id="equipment" class="workspace">
+        <aside class="filters">
+          <h1>Character</h1>
+          <label>Class<select id="hero"></select></label>
+          <div class="pair">
+            <label>Dungeon<select id="dungeon"></select></label
+            ><label
+              >Items<select id="count">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option selected>6</option>
+              </select></label
+            >
+          </div>
+          <fieldset>
+            <legend>Build constraints</legend>
+            <label class="check"
+              ><input type="checkbox" id="crit" checked />At most one critical
+              item</label
+            ><label class="check"
+              ><input type="checkbox" id="mr" />Magic resistance, if
+              available</label
+            ><label class="check"
+              ><input type="checkbox" id="cdr" />Cooldown speed, if
+              available</label
+            >
+          </fieldset>
+          <button class="primary" id="optimize">Optimize build</button>
+          <details>
+            <summary>Class weights</summary>
+            <div id="weights"></div>
+          </details>
+          <p class="small">
+            Original item snapshot · <span id="catalog-count"></span> items
+          </p>
+          <a class="small" href="https://snowball-projects.github.io/"
+            >snowball ↗</a
+          >
+        </aside>
+        <section class="catalog">
+          <div class="section-head">
+            <h2>Items <span id="match-count"></span></h2>
+            <input
+              type="search"
+              id="search"
+              aria-label="Find an item"
+              placeholder="Find an item"
+            />
+          </div>
+          <div
+            class="scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Item stats, scroll horizontally"
+          >
+            <table>
+              <thead id="item-head"></thead>
+              <tbody id="item-body"></tbody>
+            </table>
+          </div>
+        </section>
+        <aside class="build">
+          <div class="section-head">
+            <h2>Build</h2>
+            <span id="score" class="small"></span>
+          </div>
+          <div id="result">
+            <p class="muted">Choose a character and optimize.</p>
+          </div>
+        </aside>
+      </div>
+      <section id="automation" hidden class="automation">
+        <div class="section-head">
+          <h1>Automation</h1>
+          <span class="tag">Windows companion</span>
+        </div>
+        <p id="local-message">
+          Run the local companion to control Warcraft III. This public page
+          cannot send game input.
+        </p>
+        <div id="download">
+          <a class="button primary" href="./teet-local.zip" download
+            >Download companion</a
+          ><a
+            class="button"
+            href="http://127.0.0.1:8784/#automation"
+            target="_blank"
+            rel="noreferrer"
+            >Open local controls ↗</a
+          >
+          <details>
+            <summary>Start locally</summary>
+            <p>
+              Extract the download. With Python 3.11–3.13 installed on Windows,
+              run <code>start-local.bat</code>. It creates a local environment
+              and installs the helper dependencies.
+            </p>
+            <p>
+              Controls open on your computer. Nothing starts pressing keys until
+              you choose Start. Keep Warcraft in the foreground; Esc stops the
+              active helper.
+            </p>
+          </details>
+        </div>
+        <fieldset id="local-controls" disabled>
+          <legend>Helper</legend>
+          <label
+            >Mode<select id="mode">
+              <option value="repeat">Repeat key / click</option>
+              <option value="fishing">Fishing prompts</option>
+            </select></label
+          >
+          <div id="repeat-options" class="pair">
+            <label
+              >Action<select id="key">
+                <option value="e">E key</option>
+                <option value="right">F1 × 2 + right click</option>
+              </select></label
+            ><label
+              >Interval (seconds)<input
+                id="interval"
+                type="number"
+                min="0.2"
+                max="60"
+                step="0.1"
+                value="1.1"
+            /></label>
+          </div>
+          <div class="buttons">
+            <button id="start" class="primary">Start</button
+            ><button id="stop">Stop</button>
+          </div>
+          <p id="automation-status" role="status">Not connected</p>
+        </fieldset>
+        <p class="small">
+          Fishing retains its desktop preview and calibration hotkeys: F8 pause,
+          F9 calibrate, F3 preview, F5 save. Start a visible fishing prompt
+          before calibration.
+        </p>
+      </section>
+    </main>
+    <dialog id="about">
+      <form method="dialog">
+        <button aria-label="Close" class="close">×</button>
+      </form>
+      <h2>teet</h2>
+      <p>
+        A personal toolkit built while playing Twilight’s Eve Evo RPG in
+        Warcraft III. It brought together a much-loved game, practical
+        automation and the pleasure of working out a better build.
+      </p>
+      <p>
+        The optimizer maximizes the original class-weighted stat total using the
+        supplied item snapshot. It is not a combat simulator or a claim about
+        the current game balance. Empty stat cells follow the original model and
+        count as zero. Class restrictions, stacking assumptions and weights are
+        editable in the source data.
+      </p>
+      <p>
+        All calculations run on this device. No accounts, uploads or analytics.
+        The hosting provider processes ordinary web requests. Desktop automation
+        requires the separate local Windows companion.
+      </p>
+      <p>
+        Unofficial fan tool. Game names and item data remain subject to their
+        respective owners’ rights. Original software uses the
+        <a href="./LICENSE">MIT license</a>.
+      </p>
+      <p>
+        <a id="source" href="https://github.com/snowball-projects/teet"
+          >Source ↗</a
+        >
+        · <a href="./items.csv" download>Item data</a>
+      </p>
+    </dialog>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

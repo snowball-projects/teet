@@ -515,6 +515,12 @@ def main():
             else:
                 time.sleep(0.01)
 
+        # Never send game input while another application is in the foreground.
+        active = gw.getActiveWindow()
+        if not active or WINDOW_TITLE_KEYWORD.lower() not in active.title.lower():
+            time.sleep(0.1)
+            continue
+
         # ---------- Detection & keypress (auto color-fix) ----------
         frame_raw = cap.grab(region)
         decision, y_cnt, g_cnt, mask_y, mask_g, frame_bgr = detect_prompt_auto(frame_raw)
@@ -534,6 +540,9 @@ def main():
                 key = "up" if (y_cnt >= g_cnt) else "down"
                 if now - last_press_ts >= COOLDOWN_SEC:
                     time.sleep(random.uniform(*RANDOM_JITTER_SEC))
+                    active = gw.getActiveWindow()
+                    if should_exit or not active or WINDOW_TITLE_KEYWORD.lower() not in active.title.lower():
+                        continue
                     keyboard.press_and_release(key)
                     last_press_ts = time.time()
                     last_decision = key
@@ -544,6 +553,9 @@ def main():
                 key = "up" if (y_cnt >= g_cnt) else "down"
                 if key != last_decision and (now - last_press_ts) >= COOLDOWN_SEC:
                     time.sleep(random.uniform(*RANDOM_JITTER_SEC))
+                    active = gw.getActiveWindow()
+                    if should_exit or not active or WINDOW_TITLE_KEYWORD.lower() not in active.title.lower():
+                        continue
                     keyboard.press_and_release(key)
                     last_press_ts = time.time()
                     last_decision = key
