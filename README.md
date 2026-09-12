@@ -103,3 +103,5 @@ used by the app and browser. Preserve the source artwork when resizing it.
 Original software is MIT-licensed; see [LICENSE](LICENSE). The name Warcraft III
 and game-derived names/data remain the property of their respective owners and
 are not relicensed by this software license. No official affiliation is implied.
+
+[Operations](https://snowball-projects.github.io/operations/#teet)
